@@ -2,6 +2,8 @@
 import os
 import joblib
 import logging
+import subprocess
+
 
 # Setup logging
 logging.basicConfig(
