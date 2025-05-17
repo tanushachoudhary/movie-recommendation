@@ -21,7 +21,7 @@ file_path = 'df_cleaned.pkl'
 # If the file doesn't exist, run the preprocessing script
 if not os.path.exists(file_path):
     print("df_cleaned.pkl not found. Running preprocess.py...")
-    subprocess.run(["python", "preprocess.py"], check=True)
+    subprocess.run(["python", "src/preprocess.py"], check=True)
 
 # Now load the preprocessed DataFrame
 df = joblib.load(file_path)
