@@ -1,14 +1,16 @@
 # app.py
 import json
 import streamlit as st
+import os
 from recommend import df, recommend_movies
 from omdb_utils import get_movie_details
 
 
-config = json.load(open("config.json"))
+OMDB_API_KEY = os.environ.get("OMDB_API_KEY")
 
-# OMDB api key
-OMDB_API_KEY = config["OMDB_API_KEY"]
+if not OMDB_API_KEY:
+    raise ValueError("OMDB_API_KEY is not set. Please add it as an environment variable.")
+
 
 st.set_page_config(
     page_title="Movie Recommender",
