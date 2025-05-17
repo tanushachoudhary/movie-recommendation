@@ -1,4 +1,5 @@
 # recommend.py
+import os
 import joblib
 import logging
 
@@ -12,14 +13,25 @@ logging.basicConfig(
     ]
 )
 
+# Path to the preprocessed file
+file_path = 'df_cleaned.pkl'
+
+# If the file doesn't exist, run the preprocessing script
+if not os.path.exists(file_path):
+    print("df_cleaned.pkl not found. Running preprocess.py...")
+    subprocess.run(["python", "preprocess.py"], check=True)
+
+# Now load the preprocessed DataFrame
+df = joblib.load(file_path)
+
 logging.info("🔁 Loading data...")
-try:
-    df = joblib.load('df_cleaned.pkl')
-    cosine_sim = joblib.load('cosine_sim.pkl')
-    logging.info("✅ Data loaded successfully.")
-except Exception as e:
-    logging.error("❌ Failed to load required files: %s", str(e))
-    raise e
+# try:
+#     df = joblib.load('df_cleaned.pkl')
+#     cosine_sim = joblib.load('cosine_sim.pkl')
+#     logging.info("✅ Data loaded successfully.")
+# except Exception as e:
+#     logging.error("❌ Failed to load required files: %s", str(e))
+#     raise e
 
 
 def recommend_movies(movie_name, top_n=7):
@@ -39,4 +51,3 @@ def recommend_movies(movie_name, top_n=7):
     result_df.index.name = "S.No."
 
     return result_df
-
