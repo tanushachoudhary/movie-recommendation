@@ -2,11 +2,14 @@
 
 A simple content-based movie recommendation system built using **Python**, **Streamlit**, and **scikit-learn**. This app recommends similar movies based on your input using cosine similarity over textual features.
 
+![24](https://github.com/user-attachments/assets/c900ab70-3837-4d98-8a2a-897e3c1cdeed)
+
+
 ---
 
 ## 🚀 Demo
 
-[Live App on Streamlit](https://your-deployed-url.streamlit.app/) <!-- Replace with actual URL once deployed -->
+[Live App](https://movie-recommendation-8u90.onrender.com/) <!-- Replace with actual URL once deployed -->
 
 ---
 
