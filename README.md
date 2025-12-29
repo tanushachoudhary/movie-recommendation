@@ -137,7 +137,7 @@ OMDB_API_KEY="your_api_key_here" streamlit run main.py
 This project uses data compatible with the **TMDB (The Movie Database)** format:
 
 * **Movies:** ~5,000 top rated movies.
-* **TV Shows:** ~5,000 top rated TV shows.
+* **TV Shows:** ~9,000 top rated TV shows.
 
 *Note: Raw CSV files are included, but `.pkl` files are generated locally to save space.*
 
