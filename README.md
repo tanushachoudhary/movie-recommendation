@@ -4,7 +4,8 @@ A content-based recommendation system built using **Python**, **Streamlit**, and
 
 It fetches real-time posters and plot summaries using the **OMDb API**.
 
-![Demo Screenshot](https://github.com/user-attachments/assets/c900ab70-3837-4d98-8a2a-897e3c1cdeed)
+<img width="1863" height="838" alt="Screenshot 2025-12-29 160337" src="https://github.com/user-attachments/assets/c3020b8b-34d3-4e38-8b1f-50b11bd4f3ed" />
+<img width="1892" height="845" alt="Screenshot 2025-12-29 160318" src="https://github.com/user-attachments/assets/4cfb9e59-8a91-40b8-8c61-157190cde391" />
 
 ---
 
