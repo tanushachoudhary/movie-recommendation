@@ -1,3 +1,4 @@
+# src/preprocess.py
 import pandas as pd
 import re
 import nltk
@@ -13,9 +14,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logging.info("🚀 Starting preprocessing...")
 
+# --- THE FIX IS HERE ---
 nltk.download('punkt')
+nltk.download('punkt_tab')  # <--- Add this line!
 nltk.download('stopwords')
+# -----------------------
+
 stop_words = set(stopwords.words('english'))
+
+# ... rest of your code remains the same ...
 
 def preprocess_text(text):
     text = str(text) 
