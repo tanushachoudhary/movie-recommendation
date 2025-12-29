@@ -1,42 +1,80 @@
 # recommend.py
 import joblib
 import logging
+import pandas as pd
 
-# Setup logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='[%(asctime)s] %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler("recommend.log", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
-logging.info("🔁 Loading data...")
+# --- Load Data ---
 try:
-    df = joblib.load('df_cleaned.pkl')
-    cosine_sim = joblib.load('cosine_sim.pkl')
-    logging.info("✅ Data loaded successfully.")
-except Exception as e:
-    logging.error("❌ Failed to load required files: %s", str(e))
-    raise e
+    df_movies = joblib.load('movies_df.pkl')
+    sim_movies = joblib.load('movies_sim.pkl')
+    logging.info("✅ Movies data loaded.")
+except FileNotFoundError:
+    df_movies, sim_movies = None, None
 
+try:
+    df_tv = joblib.load('tv_df.pkl')
+    sim_tv = joblib.load('tv_sim.pkl')
+    logging.info("✅ TV data loaded.")
+except FileNotFoundError:
+    df_tv, sim_tv = None, None
 
-def recommend_movies(movie_name, top_n=7):
-    logging.info("🎬 Recommending movies for: '%s'", movie_name)
-    idx = df[df['title'].str.lower() == movie_name.lower()].index
-    if len(idx) == 0:
-        logging.warning("⚠️ Movie not found in dataset.")
+def get_recommendations(title, df, cosine_sim, top_n=10):
+    """
+    Standard recommendation based on similarity (cosine_sim).
+    Explicitly filters out the input 'title' from results.
+    """
+    if df is None or cosine_sim is None:
         return None
-    idx = idx[0]
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n + 1]
-    movie_indices = [i[0] for i in sim_scores]
-    logging.info("✅ Top %d recommendations ready.", top_n)
-    # Create DataFrame with clean serial numbers starting from 1
-    result_df = df[['title']].iloc[movie_indices].reset_index(drop=True)
-    result_df.index = result_df.index + 1  # Start from 1 instead of 0
-    result_df.index.name = "S.No."
 
-    return result_df
+    # 1. Find the index of the selected title
+    idx_list = df[df['title'].str.lower() == title.lower()].index
+    if len(idx_list) == 0:
+        return None
+    idx = idx_list[0]
 
+    # 2. Get similarity scores
+    scores = list(enumerate(cosine_sim[idx]))
+    
+    # 3. Sort by score (descending)
+    # We take top_n + 5 just in case we need to remove duplicates/self
+    scores = sorted(scores, key=lambda x: x[1], reverse=True)[:top_n+5]
+    
+    # 4. Retrieve candidate rows
+    movie_indices = [i[0] for i in scores]
+    candidates = df.iloc[movie_indices][['title']].copy()
+
+    # --- CRITICAL FIX: Remove the selected movie itself ---
+    # We filter out any row where the title matches the input title
+    candidates = candidates[candidates['title'].str.lower() != title.lower()]
+
+    # 5. Return strictly the requested amount (top_n)
+    return candidates.head(top_n).reset_index(drop=True)
+
+def get_recommendations_by_genre(genre, df, top_n=10):
+    """
+    Returns top popular items for a specific genre string.
+    """
+    if df is None: return None
+    
+    mask = df['genres'].str.contains(genre, case=False, na=False)
+    filtered_df = df[mask]
+    
+    result = filtered_df.sort_values(by='popularity', ascending=False).head(top_n)
+    return result[['title']].reset_index(drop=True)
+
+def get_unique_genres(df):
+    if df is None: return []
+    unique_genres = set()
+    for genres_str in df['genres'].dropna():
+        parts = [g.strip() for g in genres_str.split(',')]
+        unique_genres.update(parts)
+    return sorted(list(unique_genres))
+
+# Wrappers
+def recommend_movies(title):
+    return get_recommendations(title, df_movies, sim_movies)
+
+def recommend_tv_shows(title):
+    return get_recommendations(title, df_tv, sim_tv)
