@@ -1,108 +1,124 @@
-# 🎬 Movie Recommendation App
+🎬 Movie & TV Show Recommendation App
+A content-based recommendation system built using Python, Streamlit, and scikit-learn. This app recommends similar Movies and TV Shows based on textual features (plot, genre, keywords) and provides "Top Charts" for specific genres.
 
-A simple content-based movie recommendation system built using **Python**, **Streamlit**, and **scikit-learn**. This app recommends similar movies based on your input using cosine similarity over textual features.
+It fetches real-time posters and plot summaries using the OMDb API.
 
-![24](https://github.com/user-attachments/assets/c900ab70-3837-4d98-8a2a-897e3c1cdeed)
+🚀 Demo
+Live App (Replace with actual URL if different)
 
+📌 Features
+Dual Mode: Switch seamlessly between Movies and TV Shows.
 
----
+Two Search Methods:
 
-## 🚀 Demo
+By Similarity: Find content similar to your favorite title (using Cosine Similarity).
 
-[Live App](https://movie-recommendation-8u90.onrender.com/) <!-- Replace with actual URL once deployed -->
+By Genre: Browse top-rated content for specific genres (e.g., "Comedy", "Sci-Fi").
 
----
+Live Data: Fetches official posters and plot summaries via the OMDb API.
 
-## 📌 Features
+Smart Filtering: Automatically filters non-English content and removes duplicates.
 
-- Search for any movie from the dataset
-- Get top 5 similar movie recommendations
-- Clean, minimal UI built with **Streamlit**
-- Uses **TF-IDF Vectorization** and **Cosine Similarity** under the hood
+Optimized Performance: Uses pre-computed similarity matrices to handle large datasets efficiently.
 
----
-
-## 📁 Project Structure
-
-```
+📁 Project Structure
+Bash
 
 movie-recommendation-app/
 │
-├── app.py                 # Main Streamlit app
-├── movies.csv             # Dataset containing movie info
-├── requirements.txt       # Dependencies
-└── README.md              # This file
+├── src/
+│   ├── main.py                # Main Streamlit app (UI)
+│   ├── preprocess.py          # Script to clean data & generate models
+│   ├── recommend.py           # Logic for similarity & genre filtering
+│   ├── omdb_utils.py          # Helper to fetch posters from OMDb API
+│   ├── movies.csv             # Raw Movie Dataset
+│   ├── tv_shows.csv           # Raw TV Show Dataset
+│   ├── *.pkl                  # Generated models (ignored by Git)
+│
+├── requirements.txt           # Dependencies
+└── README.md                  # This file
+⚙️ Installation
+1. Clone the Repository
+Bash
 
-````
-
----
-
-## ⚙️ Installation
-
-### 1. Clone the Repository
-
-```bash
 git clone https://github.com/yourusername/movie-recommendation-app.git
-cd movie-recommendation-app
-````
+cd movie-recommendation-app/src
+2. Create a Virtual Environment (Recommended)
+Bash
 
-### 2. Create a Virtual Environment (optional but recommended)
-
-```bash
 python -m venv venv
 # Windows:
 venv\Scripts\activate
 # macOS/Linux:
 source venv/bin/activate
-```
+3. Install Dependencies
+Bash
 
-### 3. Install Dependencies
+pip install -r ../requirements.txt
+4. Get an API Key
+Get a free API key from OMDb API. You will need this to see posters.
 
-```bash
-pip install -r requirements.txt
-```
+▶️ Setup & Run
+Step 1: Generate the Models
+Before running the app, you must process the raw CSV files to create the similarity matrices.
 
----
+Bash
 
-## ▶️ Run the App Locally
+python preprocess.py
+This will create .pkl files in your directory. You only need to run this once.
 
-```bash
-streamlit run app.py
-```
+Step 2: Run the App
+You can run the app by providing your API key in the command line:
 
-Then open [http://localhost:8501](http://localhost:8501) in your browser.
+Windows (PowerShell):
 
----
+PowerShell
 
-## 🧠 How It Works
+$env:OMDB_API_KEY="your_api_key_here"
+streamlit run main.py
+Mac / Linux:
 
-* Movie descriptions (or metadata) are vectorized using **TF-IDF**
-* The app computes **cosine similarity** between movie vectors
-* Based on your selected movie, the app recommends top similar movies
+Bash
 
----
+OMDB_API_KEY="your_api_key_here" streamlit run main.py
+Alternatively, create a .streamlit/secrets.toml file containing OMDB_API_KEY = "your_key".
 
-## 📊 Dataset
+🧠 How It Works
+Preprocessing:
 
-This project uses a simplified movie dataset with columns like:
+The app ingests movies.csv and tv_shows.csv.
 
-* `title`: Movie title
-* `overview`: Description used for similarity comparison
+It cleans the text (removing stopwords) and combines metadata (Genres + Keywords + Taglines).
 
----
+It converts text into numbers using TF-IDF Vectorization.
 
-## 📦 Requirements
+It calculates the Cosine Similarity between every item to find matches.
 
-See `requirements.txt`, but mainly:
+Recommendation Engine:
 
-* `streamlit`
-* `pandas`
-* `scikit-learn`
-* `numpy`
+Similarity Search: Looks up the pre-calculated similarity scores to find the closest matches to your input.
 
+Genre Search: Filters the dataset for the selected genre and sorts results by popularity.
 
----
+📊 Dataset
+This project uses data compatible with the TMDB (The Movie Database) format:
 
-## 📝 License
+Movies: ~5,000 top rated movies.
 
-This project is open source and available under the [MIT License](LICENSE).
+TV Shows: ~5,000 top rated TV shows.
+
+Note: Raw CSV files are included, but .pkl files are generated locally to save space.
+
+📦 Requirements
+streamlit
+
+pandas
+
+scikit-learn
+
+nltk
+
+requests
+
+📝 License
+This project is open source and available under the MIT License.
